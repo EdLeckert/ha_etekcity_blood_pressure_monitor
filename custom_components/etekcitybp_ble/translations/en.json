@@ -1,0 +1,23 @@
+{
+  "config": {
+    "flow_title": "Etekcity Smart Blood Pressure Monitor",
+    "step": {
+      "user": {
+        "description": "Choose a device to set up:",
+        "data": {
+          "address": "Device"
+
+        }
+      },
+      "bluetooth_confirm": {
+        "description": "Add Etekcity Smart Blood Pressure Monitor?"
+      }
+    },
+    "abort": {
+      "not_supported": "Device not supported",
+      "no_devices_found": "No devices found",
+      "already_in_progress": "Device config already in progress",
+      "already_configured": "Device is already configured"
+    }
+  }
+}
