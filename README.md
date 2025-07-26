@@ -1,6 +1,6 @@
 # Etekcity Smart Blood Pressure Monitor Integration for Home Assistant
 
-![GitHub Release](https://img.shields.io/github/v/release/EdLeckert/ha-etekcitybp-ble)
+![GitHub Release](https://img.shields.io/github/v/release/EdLeckert/ha_etekcity_blood_pressure_monitor)
 
 The `etekcitybp_ble` implementation allows you to integrate your Etekcity Smart Blood Pressure Monitor data into Home Assistant.
 
