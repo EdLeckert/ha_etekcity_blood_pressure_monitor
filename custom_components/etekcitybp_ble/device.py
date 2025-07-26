@@ -6,7 +6,6 @@ from dataclasses import dataclass
 import logging
 
 from collections.abc import Callable
-from re import S
 from typing import Any
 
 from bleak.backends.device import BLEDevice

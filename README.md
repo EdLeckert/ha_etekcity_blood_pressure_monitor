@@ -2,7 +2,7 @@
 
 ![GitHub Release](https://img.shields.io/github/v/release/EdLeckert/ha-etekcitybp-ble)
 
-The `ha-etekcitybp-ble` implementation allows you to integrate your Etekcity Smart Blood Pressure Monitor data into Home Assistant.
+The `etekcitybp_ble` implementation allows you to integrate your Etekcity Smart Blood Pressure Monitor data into Home Assistant.
 
 ## Features
 
@@ -25,7 +25,7 @@ The developer and the contributors are not in any way affiliated with Etekcity C
 2. Restart Home Assistant.
 3. Power on the Etekcity Smart Blood Pressure Monitor by pressing the `MEM` button. The device should be discovered automatically by Home Assistant.
 4. In the Home Assistant UI, navigate to `Settings` then `Devices & services`. In the `Integrations` tab, you should see the Etekcity Smart Blood Pressure integration listed under `Discovered`. Click `ADD` and fill in the forms.
-5. Optionally, you may click on the `ADD INTEGRATION` button at the bottom right and select `Etekcity Blood Pressure BLE`. Fill in the forms.
+5. Optionally, you may click on the `ADD INTEGRATION` button at the bottom right and select `Etekcity Blood Pressure Monitor`. Fill in the forms.
 
 ## Usage
 
