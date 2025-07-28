@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-import contextlib
 import logging
 
 from bleak import BleakClient
@@ -30,9 +29,6 @@ from .const import (
 )
 from .device import EtekcityBPDevice
 
-
-if TYPE_CHECKING:
-    from bleak.backends.device import BLEDevice
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -70,7 +66,6 @@ class EtekcityBPCoordinator(
         self.device = device
         self.device_name = device_name
         self.base_unique_id = base_unique_id
-        # self._ready_event = asyncio.Event()
 
         _LOGGER.debug(f"Scanner count: {bluetooth.async_scanner_count(hass, connectable=True)}")
         if bluetooth.async_scanner_count(hass, connectable=True) < 1:
@@ -101,7 +96,6 @@ class EtekcityBPCoordinator(
         # This method is called when the coordinator is updated.
         # It can be used to update the device state or perform other actions.
         _LOGGER.info("Device %s is now available", self.device_name)
-        # self._ready_event.set()
 
     async def _async_update(
         self, service_info: bluetooth.BluetoothServiceInfoBleak
@@ -163,7 +157,6 @@ class EtekcityBPCoordinator(
     ) -> None:
         """Handle the device going unavailable."""
         super()._async_handle_unavailable(service_info)
-        self._available = False
         _LOGGER.info("Device %s is unavailable", self.device_name)
 
 
@@ -185,3 +178,8 @@ class EtekcityBPCoordinator(
             )
         ):
             return
+
+    async def async_unload_entry(self) -> bool:
+        """Unload a config entry."""
+        self._available = False
+        return True
