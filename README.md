@@ -11,6 +11,7 @@ The `etekcitybp_ble` implementation allows you to integrate your Etekcity Smart 
 - Provides Irregular Heartbeat, Motion, and other measurement errors.
 - Supports two users.
 - Provides the current Display Units setting in the device.
+- Records measurement data automatically without the need for a mobile device or app.
 
 ## Disclaimer
 This is an unofficial integration of Etekcity Smart Blood Pressure Monitor Integration for Home Assistant. 
