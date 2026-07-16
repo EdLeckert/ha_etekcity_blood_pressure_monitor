@@ -6,6 +6,7 @@ import asyncio
 import logging
 
 from bleak import BleakClient
+from bleak_retry_connector import establish_connection
 
 from typing import TYPE_CHECKING
 
@@ -102,47 +103,55 @@ class EtekcityBPCoordinator(
     ) -> None:
         """Poll the device."""
         while self._available:
+            client = None
             try:
                 _LOGGER.debug(f"Connecting to device {service_info.device.address}")
-                async with BleakClient(service_info.device) as client:
-                    if (not client.is_connected):
-                        raise "client not connected"
+                client = await establish_connection(
+                    BleakClient,
+                    service_info.device,
+                    service_info.device.address,
+                )
+                if (not client.is_connected):
+                    raise Exception("client not connected")
 
-                    # Get Hardware and Firmware version
-                    try:
-                        if not self.device.data.hw_version:
-                            _LOGGER.debug("Reading hardware version")
-                            self.device.data.hw_version = (
-                                await client.read_gatt_char(
-                                    HW_REVISION_STRING_CHARACTERISTIC_UUID
-                                )
-                            ).decode()
+                # Get Hardware and Firmware version
+                try:
+                    if not self.device.data.hw_version:
+                        _LOGGER.debug("Reading hardware version")
+                        self.device.data.hw_version = (
+                            await client.read_gatt_char(
+                                HW_REVISION_STRING_CHARACTERISTIC_UUID
+                            )
+                        ).decode()
 
-                        if not self.device.data.sw_version:
-                            _LOGGER.debug("Reading software version")
-                            self.device.data.sw_version = (
-                                await client.read_gatt_char(
-                                    SW_REVISION_STRING_CHARACTERISTIC_UUID
-                                )
-                            ).decode()
-                    except Exception as e:
-                        _LOGGER.warning(f"Error reading version info: {e}")
-                        self.device.data.hw_version = "Unknown"
-                        self.device.data.sw_version = "Unknown"
+                    if not self.device.data.sw_version:
+                        _LOGGER.debug("Reading software version")
+                        self.device.data.sw_version = (
+                            await client.read_gatt_char(
+                                SW_REVISION_STRING_CHARACTERISTIC_UUID
+                            )
+                        ).decode()
+                except Exception as e:
+                    _LOGGER.warning(f"Error reading version info: {e}")
+                    self.device.data.hw_version = "Unknown"
+                    self.device.data.sw_version = "Unknown"
 
-                    # Enable notifications to get BP values
-                    _LOGGER.debug ("Starting notifications")
-                    await client.start_notify(CHARACTERISTIC_BLOOD_PRESSURE, self._notification_handler)
-                    await client.write_gatt_descriptor(CLIENT_CHARACTERISTIC_CONFIG_HANDLE, CLIENT_CHARACTERISTIC_CONFIG_DATA)
-                    await asyncio.sleep(4)
+                # Enable notifications to get BP values
+                _LOGGER.debug ("Starting notifications")
+                await client.start_notify(CHARACTERISTIC_BLOOD_PRESSURE, self._notification_handler)
+                await client.write_gatt_descriptor(CLIENT_CHARACTERISTIC_CONFIG_HANDLE, CLIENT_CHARACTERISTIC_CONFIG_DATA)
+                await asyncio.sleep(4)
 
-                    _LOGGER.debug ("Pausing notification processing")
-                    async with asyncio.timeout(10):
-                        await client.stop_notify(CHARACTERISTIC_BLOOD_PRESSURE)
-                    await asyncio.sleep(1)
+                _LOGGER.debug ("Pausing notification processing")
+                async with asyncio.timeout(10):
+                    await client.stop_notify(CHARACTERISTIC_BLOOD_PRESSURE)
+                await asyncio.sleep(1)
             except Exception as e:
                 _LOGGER.debug(f"Error {e}; Long pausing notification processing")
                 await asyncio.sleep(20)
+            finally:
+                if client is not None and client.is_connected:
+                    await client.disconnect()
 
     @callback
     async def _notification_handler(self, handle, data):
