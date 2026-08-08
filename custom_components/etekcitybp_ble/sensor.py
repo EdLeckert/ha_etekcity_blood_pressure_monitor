@@ -122,8 +122,8 @@ SENSOR_TYPES: dict[str, SensorEntityDescription] = {
         suggested_display_precision = 1,
         suggested_unit_of_measurement=UnitOfPressure.KPA,
     ),
-    "diastolickap1": SensorEntityDescription(
-        key="diastolickap1",
+    "diastolickpa1": SensorEntityDescription(
+        key="diastolickpa1",
         name ="Diastolic (kPa) User 2",
         device_class=SensorDeviceClass.PRESSURE,
         entity_registry_enabled_default=False,
